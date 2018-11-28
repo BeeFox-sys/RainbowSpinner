@@ -1,15 +1,19 @@
 
 var dots = []
 var img;
+var speed;
+var textBol;
 var osc, env, ftt;
 var lines;
 
 function setup() {
   createCanvas(windowWidth,windowHeight)
-  // background(0)
+  background(0)
   lines = false;
+  speed = -0.0005;
+  textBol = true
   for(var i = 0; i < 30; i++){
-    dots.push(new Dot(25+(i*10), +0.02+((30-i)*0.001), [(map(i,0,30,0,360)),70,100]))
+    dots.push(new Dot(25+(i*10), 0.02+((30-i)*speed), [(map(i,0,30,0,360)),70,100]))
   }
   dots.forEach(function(dot,index){
     switch ((index)%8) {
@@ -52,7 +56,7 @@ function setup() {
 
 function draw() {
   colorMode(RGB)
-  tint(0,0,100,50)
+  tint(0,0,0,50)
   image(img, 0, 0, width, height)
   colorMode(HSB)
   translate(width/2,height/2)
@@ -83,6 +87,21 @@ function draw() {
         }
   })
 }
+if(textBol){
+  noStroke()
+  fill(255)
+  text(` 'p' to hide/show text \n '[' to slow down speed ']' to speed up speed \n Space to toggle line mode`, -(width/2)+10, -(height/3)+10)
+}
+}
+
+function speedChange() {
+  if(speed >= -0.0005){
+  dots.forEach(function(dot, i) {
+      dot.speed = 0.02+((30-i)*speed)
+    })
+  } else {
+    speed = -0.0005
+  }
 }
 
 function windowResized() {
@@ -91,7 +110,22 @@ function windowResized() {
 }
 
 function keyTyped() {
-  if(key === ' '){
-    lines = !lines
+  switch (key) {
+    case ' ':
+      lines = !lines;
+      break;
+    case ']':
+      speed += 0.0005;
+      speedChange();
+      break;
+    case '[':
+      speed -= 0.0005;
+      speedChange();
+      break;
+    case 'p':
+      textBol = !textBol
+    default:
+      break;
+
   }
 }
